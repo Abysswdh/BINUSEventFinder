@@ -43,7 +43,7 @@ async function loadEvents() {
     if (!res.ok) throw new Error("Failed to fetch events");
     allEvents = await res.json();
     displayEvents(allEvents, list);
-    setupFilters(allEvents, displayEvents, list, ['title', 'date', 'location']); 
+    setupFilters(allEvents, displayEvents, list, ['title', 'Title', 'date', 'Date', 'location', 'Location']); 
   } catch (err) {
     console.error(err);
     list.innerHTML = `<p style="text-align:center;color:#999;grid-column:1/-1;">Failed to load events.</p>`;
@@ -64,7 +64,7 @@ function displayEvents(items, list) {
     const time = event['start'] || "";
     const location = event['location'] || "Online/TBA";
     const link = event['link'] || "#";
-    const image = event['image'] || '/assets/logo.png';
+    const image = event['image'] || 'assets/logo.png';
 
     const li = document.createElement("li");
     li.className = "post";
@@ -107,7 +107,15 @@ async function loadCompetitions() {
     if (!res.ok) throw new Error("Failed to fetch competitions");
     allCompetitions = await res.json();
     displayCompetitions(allCompetitions, list);
-    setupFilters(allCompetitions, displayCompetitions, list, ['Nama Lomba', 'Tanggal', 'Tingkat']);
+    // Include fields relevant for Search AND Topic filtering
+    const searchFields = [
+      'nama lomba', 'Nama Lomba', 
+      'bidang umum', 'Bidang Umum', 
+      'cabang', 'Cabang', 
+      'level', 'Level',
+      'lokasi', 'Lokasi'
+    ];
+    setupFilters(allCompetitions, displayCompetitions, list, searchFields);
   } catch (err) {
     console.error(err);
     list.innerHTML = `<p style="text-align:center;color:#999;grid-column:1/-1;">Failed to load competitions.</p>`;
@@ -122,20 +130,54 @@ function displayCompetitions(items, list) {
   }
 
   items.forEach(item => {
-    // Mapping based on the "COMP" tab columns
-    const title = item['Nama Lomba'] || "Untitled Competition";
-    const date = item['Tanggal'] || "TBA";
-    const level = item['Tingkat'] || "Nasional";
-    const link = item['Link'] || "#";
+    // Map to actual Google Sheet columns
+    const title = item['nama lomba'] || item['Nama Lomba'] || "Untitled Competition";
+    const field = item['bidang umum'] || item['Bidang Umum'] || "";
+    const category = item['cabang'] || item['Cabang'] || "";
+    const month = item['bulan pelaksanaan'] || item['Bulan Pelaksanaan'] || "TBA";
+    const level = item['level'] || item['Level'] || "Nasional";
+    const status = item['status pendaftaran'] || item['Status Pendaftaran'] || "";
+    const location = item['lokasi'] || item['Lokasi'] || "";
+    const link = item['link'] || item['Link'] || "#";
+    
+    // Level badge color
+    let levelColor = '#004b8d';
+    if (level.toLowerCase().includes('internasional') || level.toLowerCase().includes('international')) {
+      levelColor = '#d4af37';
+    } else if (level.toLowerCase().includes('nasional') || level.toLowerCase().includes('national')) {
+      levelColor = '#0066cc';
+    } else if (level.toLowerCase().includes('regional')) {
+      levelColor = '#28a745';
+    }
+    
+    // Status badge
+    let statusBadge = '';
+    if (status.toLowerCase().includes('buka') || status.toLowerCase().includes('open')) {
+      statusBadge = '<span class="free-badge">OPEN</span>';
+    } else if (status.toLowerCase().includes('tutup') || status.toLowerCase().includes('closed')) {
+      statusBadge = '<span class="status-closed">CLOSED</span>';
+    }
     
     const li = document.createElement("li");
-    li.className = "post";
+    li.className = "post competition-card";
     li.innerHTML = `
-      <div class="info-box">
-        <h2 class="post-title">${title}</h2>
-        <p><strong>Date:</strong> ${date}</p>
-        <p><strong>Level:</strong> ${level}</p>
-        <a href="${link}" target="_blank" class="btn">Register / Info</a>
+      <div class="competition-content">
+        <div class="competition-header">
+          <h2 class="post-title">${title}</h2>
+          <span class="level-badge" style="background:${levelColor}">${level}</span>
+        </div>
+        
+        <div class="competition-details">
+          ${field ? `<div class="detail-item"><span class="detail-icon">🎯</span><span>${field}</span></div>` : ''}
+          ${category ? `<div class="detail-item"><span class="detail-icon">📂</span><span>${category}</span></div>` : ''}
+          <div class="detail-item"><span class="detail-icon">📅</span><span>${month}</span></div>
+          ${location ? `<div class="detail-item"><span class="detail-icon">📍</span><span>${location}</span></div>` : ''}
+        </div>
+        
+        <div class="competition-actions">
+          <a href="${link}" target="_blank" class="btn btn-primary">View Details</a>
+          ${statusBadge}
+        </div>
       </div>
     `;
     list.appendChild(li);
@@ -163,7 +205,13 @@ async function loadCommunityService() {
     if (!res.ok) throw new Error("Failed to fetch community service");
     allComserv = await res.json();
     displayCommunityService(allComserv, list);
-    setupFilters(allComserv, displayCommunityService, list, ['Title', 'Nama Kegiatan', 'Date', 'Tanggal', 'Location', 'Lokasi']);
+    const searchFields = [
+      'Title', 'title', 
+      'Nama Kegiatan', 'nama kegiatan', 
+      'Location', 'location', 
+      'Lokasi', 'lokasi'
+    ];
+    setupFilters(allComserv, displayCommunityService, list, searchFields);
   } catch (err) {
     console.error(err);
     list.innerHTML = `<p style="text-align:center;color:#999;grid-column:1/-1;">Failed to load community service.</p>`;
@@ -203,37 +251,187 @@ function displayCommunityService(items, list) {
 }
 
 // === FILTER LOGIC ===
+// === FILTER LOGIC ===
+const TOPIC_KEYWORDS = {
+  "Technology": ["computer", "science", "tech", "coding", "data", "ai", "cyber", "software", "it", "information"],
+  "Business": ["business", "management", "marketing", "finance", "accounting", "entrepreneur", "startup", "ibe"],
+  "Design": ["design", "art", "creative", "fashion", "media", "visual", "dkv", "film"],
+  "Engineering": ["engineering", "robotics", "civil", "industrial", "architecture", "mechanic"],
+  "Communication": ["communication", "public relations", "journalism", "broadcasting"]
+};
+
 function setupFilters(data, renderFn, listElement, searchFields) {
   const searchInput = document.getElementById('search-input');
-  const monthSelect = document.getElementById('month-filter');
-
-  if (searchInput) {
-    searchInput.addEventListener('input', () => {
+  const topicSelect = document.getElementById('topic-filter');
+  const locationCheckboxes = document.querySelectorAll('#location-filters input[type="checkbox"]');
+  const dateSlider = document.getElementById('date-slider');
+  const monthSlider = document.getElementById('month-slider');
+  const sortSelect = document.getElementById('sort-filter');
+  
+  // 1. Date Slider (Seminars - Next X Days)
+  if (dateSlider) {
+    const daysDisplay = document.getElementById('days-display');
+    const rangeText = document.getElementById('date-range-text');
+    
+    dateSlider.addEventListener('input', (e) => {
+      const days = e.target.value;
+      if (daysDisplay) daysDisplay.innerText = days;
+      if (rangeText) rangeText.innerText = `Next ${days} days`;
       filterAndRender(data, renderFn, listElement, searchFields);
     });
   }
 
-  if (monthSelect) {
-    monthSelect.addEventListener('change', () => {
+  // 2. Month Slider (Competitions - Until Month Year)
+  if (monthSlider) {
+    const monthDisplay = document.getElementById('month-display');
+    const rangeText = document.getElementById('month-range-text');
+    
+    const updateMonthLabel = () => {
+       const monthsToAdd = parseInt(monthSlider.value);
+       const d = new Date();
+       d.setMonth(d.getMonth() + monthsToAdd);
+       const label = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+       if (monthDisplay) monthDisplay.innerText = label;
+       if (rangeText) rangeText.innerText = `Until ${label}`;
+    };
+
+    // Initialize label
+    updateMonthLabel();
+
+    monthSlider.addEventListener('input', () => {
+      updateMonthLabel();
       filterAndRender(data, renderFn, listElement, searchFields);
     });
   }
+
+  // Event Listeners
+  if (searchInput) searchInput.addEventListener('input', () => filterAndRender(data, renderFn, listElement, searchFields));
+  if (topicSelect) topicSelect.addEventListener('change', () => filterAndRender(data, renderFn, listElement, searchFields));
+  if (sortSelect) sortSelect.addEventListener('change', () => filterAndRender(data, renderFn, listElement, searchFields));
+  
+  locationCheckboxes.forEach(cb => {
+    cb.addEventListener('change', () => filterAndRender(data, renderFn, listElement, searchFields));
+  });
+
+  // Trigger initial filter to sync UI with default slider values
+  filterAndRender(data, renderFn, listElement, searchFields);
+}
+
+function parseDate(dateStr) {
+  if (!dateStr) return null;
+  
+  // Try parsing DD/MM/YYYY or DD-MM-YYYY manually first (common in ID)
+  const dmy = dateStr.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/);
+  if (dmy) {
+    return new Date(dmy[3], dmy[2] - 1, dmy[1]);
+  }
+
+  const d = new Date(dateStr);
+  if (!isNaN(d.getTime())) return d;
+  return null;
+}
+
+function parseMonth(monthStr) {
+  if (!monthStr) return null;
+  const months = {
+    'januari': 0, 'january': 0, 'jan': 0,
+    'februari': 1, 'february': 1, 'feb': 1,
+    'maret': 2, 'march': 2, 'mar': 2,
+    'april': 3, 'apr': 3,
+    'mei': 4, 'may': 4,
+    'juni': 5, 'june': 5, 'jun': 5,
+    'juli': 6, 'july': 6, 'jul': 6,
+    'agustus': 7, 'august': 7, 'aug': 7,
+    'september': 8, 'sep': 8,
+    'oktober': 9, 'october': 9, 'oct': 9,
+    'november': 10, 'nov': 10,
+    'desember': 11, 'december': 11, 'dec': 11
+  };
+  
+  const cleanStr = monthStr.toLowerCase().trim();
+  const parts = cleanStr.split(' ');
+  const monthName = parts[0];
+  
+  if (months.hasOwnProperty(monthName)) {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const monthIndex = months[monthName];
+    
+    let d = new Date(currentYear, monthIndex, 1);
+    
+    if (parts.length > 1) {
+       const yearPart = parseInt(parts[1]);
+       if (!isNaN(yearPart)) {
+          d.setFullYear(yearPart);
+          return d;
+       }
+    }
+
+    if (monthIndex < now.getMonth() - 2) {
+       d.setFullYear(currentYear + 1);
+    }
+    return d;
+  }
+  return null;
+}
+
+function parseSeminarDate(item) {
+  // 1. Try combining Tanggal and Bulan (most reliable for this dataset)
+  const tanggal = item['tanggal'] || item['Tanggal'];
+  const bulan = item['bulan'] || item['Bulan'] || item['bulan pelaksanaan'] || item['Bulan Pelaksanaan'];
+  
+  if (tanggal && bulan) {
+    // Handle ranges like "12-14", take the first day
+    const dayStr = String(tanggal).split('-')[0].trim();
+    const day = parseInt(dayStr);
+    
+    const monthDate = parseMonth(bulan);
+    
+    if (!isNaN(day) && monthDate) {
+      monthDate.setDate(day);
+      return monthDate;
+    }
+  }
+
+  // 2. Fallback: Try 'date' field directly
+  const dateStr = item['date'] || item['Date'];
+  if (dateStr) {
+    return parseDate(dateStr);
+  }
+  
+  // 3. Fallback: Try parsing 'bulan' only (for competitions without dates)
+  if (bulan) {
+    return parseMonth(bulan);
+  }
+
+  return null;
 }
 
 function filterAndRender(data, renderFn, listElement, searchFields) {
   const searchInput = document.getElementById('search-input');
-  const monthSelect = document.getElementById('month-filter');
+  const topicSelect = document.getElementById('topic-filter');
+  const locationCheckboxes = document.querySelectorAll('#location-filters input[type="checkbox"]');
+  const dateSlider = document.getElementById('date-slider');
+  const monthSlider = document.getElementById('month-slider');
+  const sortSelect = document.getElementById('sort-filter');
 
   const searchTerm = searchInput ? searchInput.value.toLowerCase() : "";
-  const selectedMonth = monthSelect ? monthSelect.value : "";
+  const selectedTopic = topicSelect ? topicSelect.value : "";
+  const sortOrder = sortSelect ? sortSelect.value : "latest";
+  
+  const selectedLocations = Array.from(locationCheckboxes)
+    .filter(cb => cb.checked)
+    .map(cb => cb.value.toLowerCase());
 
-  const filtered = data.filter(item => {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+
+  let filtered = data.filter(item => {
     // 1. Search Filter
     let matchesSearch = false;
     if (searchTerm === "") {
       matchesSearch = true;
     } else {
-      // Check if any of the specified fields contain the search term
       for (const field of searchFields) {
         if (item[field] && String(item[field]).toLowerCase().includes(searchTerm)) {
           matchesSearch = true;
@@ -242,22 +440,132 @@ function filterAndRender(data, renderFn, listElement, searchFields) {
       }
     }
 
-    // 2. Month Filter
-    let matchesMonth = false;
-    if (selectedMonth === "") {
-      matchesMonth = true;
+    // 2. Topic Filter
+    let matchesTopic = false;
+    if (selectedTopic === "") {
+      matchesTopic = true;
     } else {
-      // Try to find a date field (lowercase or uppercase)
-      const dateStr = item['date'] || item['Date'] || item['Tanggal'] || "";
-      if (dateStr && String(dateStr).includes(selectedMonth)) {
-        matchesMonth = true;
+      const keywords = TOPIC_KEYWORDS[selectedTopic] || [];
+      const textToCheck = searchFields.map(f => item[f] || "").join(" ").toLowerCase();
+      if (keywords.some(k => textToCheck.includes(k))) {
+        matchesTopic = true;
       }
     }
 
-    return matchesSearch && matchesMonth;
+    // 3. Location Filter
+    let matchesLocation = true;
+    if (locationCheckboxes.length > 0 && selectedLocations.length > 0) {
+      const itemLoc = (item['location'] || item['Location'] || item['Lokasi'] || item['lokasi'] || "").toLowerCase();
+      if (itemLoc) {
+        matchesLocation = selectedLocations.some(loc => itemLoc.includes(loc));
+      }
+    }
+
+    // 4. Timeline Filter
+    let matchesTime = true;
+    const itemDate = parseSeminarDate(item);
+
+    if (itemDate) {
+      itemDate.setHours(0, 0, 0, 0);
+
+      if (dateSlider) {
+        // Seminars: Next X Days
+        const maxDays = parseInt(dateSlider.value);
+        const futureLimit = new Date(now);
+        futureLimit.setDate(now.getDate() + maxDays);
+        
+        // Strict future filter: Today <= Event <= Today + X
+        // Allow slightly past events (e.g. earlier today) by checking >= now - 1 day
+        const yesterday = new Date(now);
+        yesterday.setDate(now.getDate() - 1);
+        
+        if (itemDate < yesterday || itemDate > futureLimit) {
+           matchesTime = false;
+        }
+      } else if (monthSlider) {
+        // Competitions: Until Month Year
+        const monthsToAdd = parseInt(monthSlider.value);
+        const limitDate = new Date(now);
+        limitDate.setMonth(limitDate.getMonth() + monthsToAdd);
+        limitDate.setMonth(limitDate.getMonth() + 1);
+        limitDate.setDate(0); // End of target month
+        
+        // Similarly, don't hide slightly past events or current month events aggressively
+        const pastLimit = new Date(now);
+        pastLimit.setMonth(now.getMonth() - 2); // Show recent past (2 months) to avoid empty lists
+
+        if (itemDate < pastLimit || itemDate > limitDate) {
+           matchesTime = false;
+        }
+      }
+    } else {
+      // If no date found (TBA), always show it
+      matchesTime = true;
+    }
+
+    return matchesSearch && matchesTopic && matchesLocation && matchesTime;
+  });
+
+  // 5. Sorting
+  filtered.sort((a, b) => {
+    const dateA = parseSeminarDate(a) || new Date(0);
+    const dateB = parseSeminarDate(b) || new Date(0);
+    
+    if (sortOrder === 'latest') {
+      return dateB - dateA;
+    } else {
+      return dateA - dateB;
+    }
   });
 
   renderFn(filtered, listElement);
+}
+
+function displayCompetitions(items, list) {
+  list.innerHTML = "";
+  if (items.length === 0) {
+    list.innerHTML = `<p style="text-align:center;color:#999;grid-column:1/-1;">No competitions found matching your criteria.</p>`;
+    return;
+  }
+
+  items.forEach(item => {
+    const title = item['nama lomba'] || item['Nama Lomba'] || "Untitled Competition";
+    const field = item['bidang umum'] || item['Bidang Umum'] || "";
+    const category = item['cabang'] || item['Cabang'] || "";
+    const month = item['bulan pelaksanaan'] || item['Bulan Pelaksanaan'] || "TBA";
+    const level = item['level'] || item['Level'] || "Nasional";
+    const status = item['status pendaftaran'] || item['Status Pendaftaran'] || "";
+    const location = item['lokasi'] || item['Lokasi'] || "";
+    const link = item['link'] || item['Link'] || "#";
+    
+    const li = document.createElement("li");
+    li.className = "post";
+    li.innerHTML = `
+      <div class="info-box">
+        <h2 class="post-title">${title}</h2>
+        <p><strong>Field:</strong> ${field} (${category})</p>
+        <p><strong>Date:</strong> ${month}</p>
+        <p><strong>Level:</strong> ${level}</p>
+        <p><strong>Location:</strong> ${location}</p>
+        <p><strong>Status:</strong> ${status}</p>
+        <div class="flex flex-wrap gap-2 mt-2">
+           <a href="${link}" target="_blank" class="btn">Register / Info</a>
+        </div>
+      </div>
+    `;
+    list.appendChild(li);
+  });
+}
+
+// === TOGGLE FILTERS ===
+function toggleFilters() {
+  const filterContent = document.getElementById('filter-content');
+  const toggleIcon = document.getElementById('filter-toggle-icon');
+  
+  if (filterContent && toggleIcon) {
+    filterContent.classList.toggle('collapsed');
+    toggleIcon.textContent = filterContent.classList.contains('collapsed') ? '+' : '−';
+  }
 }
 
 // === INIT ===

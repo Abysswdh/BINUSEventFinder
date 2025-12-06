@@ -6,7 +6,7 @@
   <title>BINUS - Seminar (SAT Points)</title>
 
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="/assets/icon.png">
+  <link rel="icon" type="image/x-icon" href="assets/icon.png">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,7 +43,7 @@
 
     <div class="header-wrapper">
       <div class="logo-group">
-        <img src="/assets/ribbon.svg" alt="BINUS Ribbon" class="header-ribbon">
+        <img src="assets/ribbon.svg" alt="BINUS Ribbon" class="header-ribbon">
         <img src="https://binus.ac.id/malang/wp-content/uploads/2022/08/logo.svg" alt="BINUS Logo">
       </div>
       <nav class="main-nav">
@@ -65,23 +65,77 @@
     </section>
 
     <!-- Filter Section -->
-    <div class="filter-section">
-      <input type="text" id="search-input" class="filter-input" placeholder="Search seminars..." data-i18n="filter.search.seminar">
-      <select id="month-filter" class="filter-select">
-        <option value="" data-i18n="filter.month.all">All Months</option>
-        <option value="January">January</option>
-        <option value="February">February</option>
-        <option value="March">March</option>
-        <option value="April">April</option>
-        <option value="May">May</option>
-        <option value="June">June</option>
-        <option value="July">July</option>
-        <option value="August">August</option>
-        <option value="September">September</option>
-        <option value="October">October</option>
-        <option value="November">November</option>
-        <option value="December">December</option>
-      </select>
+    <!-- Advanced Filter Section -->
+    <div class="advanced-filter-box">
+      <div class="filter-header">
+        <h3>🔍 Filters</h3>
+        <button class="filter-toggle-btn" onclick="toggleFilters()">
+          <span class="toggle-icon" id="filter-toggle-icon">−</span>
+        </button>
+      </div>
+      <div class="filter-content" id="filter-content">
+      <!-- Row 1: Search -->
+      <div class="filter-row">
+        <div class="filter-group filter-full-width">
+          <label data-i18n="filter.search.label">Search</label>
+          <div class="search-bar-container">
+            <input type="text" id="search-input" placeholder="Search seminars..." data-i18n="filter.search.seminar">
+            <button class="search-icon-btn">🔍</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Filters -->
+      <div class="filter-row">
+        <!-- Topic Filter -->
+        <div class="filter-group">
+          <label data-i18n="filter.topic.label">Topic / Major</label>
+          <select id="topic-filter" class="filter-select">
+            <option value="" data-i18n="filter.topic.all">All Topics</option>
+            <option value="Technology">Technology (CS, IT)</option>
+            <option value="Business">Business (IBE, Management)</option>
+            <option value="Design">Design (DKV, Fashion)</option>
+            <option value="Engineering">Engineering</option>
+            <option value="Communication">Communication</option>
+          </select>
+        </div>
+
+        <!-- Location Filter -->
+        <div class="filter-group">
+          <label data-i18n="filter.location.label">Location</label>
+          <div class="checkbox-group" id="location-filters">
+            <label class="checkbox-item"><input type="checkbox" value="Online" checked> Online / Zoom</label>
+            <label class="checkbox-item"><input type="checkbox" value="Hybrid" checked> Hybrid</label>
+            <label class="checkbox-item"><input type="checkbox" value="Syahdan" checked> Syahdan Campus</label>
+            <label class="checkbox-item"><input type="checkbox" value="Anggrek" checked> Anggrek Campus</label>
+            <label class="checkbox-item"><input type="checkbox" value="Kijang" checked> Kijang Campus</label>
+            <label class="checkbox-item"><input type="checkbox" value="Alam Sutera" checked> Alam Sutera Campus</label>
+            <label class="checkbox-item"><input type="checkbox" value="JWC" checked> JWC Campus</label>
+            <label class="checkbox-item"><input type="checkbox" value="fX" checked> fX Campus</label>
+            <label class="checkbox-item"><input type="checkbox" value="Malang" checked> Malang Campus</label>
+            <label class="checkbox-item"><input type="checkbox" value="Bandung" checked> Bandung Campus</label>
+            <label class="checkbox-item"><input type="checkbox" value="Bekasi" checked> Bekasi Campus</label>
+          </div>
+        </div>
+
+        <!-- Timeline Filter -->
+        <div class="filter-group">
+          <label><span data-i18n="filter.timeline.label">Timeline</span> (<span id="days-display">30</span> <span data-i18n="filter.days">days</span>)</label>
+          <div class="range-container">
+            <input type="range" id="date-slider" min="1" max="90" value="30" class="range-slider">
+            <div class="range-value" id="date-range-text">Next 30 days</div>
+          </div>
+        </div>
+        
+        <!-- Sort Filter -->
+        <div class="filter-group">
+          <label data-i18n="filter.sort.label">Sort By</label>
+          <select id="sort-filter" class="filter-select">
+            <option value="latest" data-i18n="filter.sort.latest">Latest to Oldest</option>
+            <option value="oldest" data-i18n="filter.sort.oldest">Oldest to Latest</option>
+          </select>
+        </div>
+      </div>
     </div>
 
     <ul id="event-list" class="post-roll">

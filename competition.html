@@ -6,7 +6,7 @@
   <title>BINUS - Informasi Lomba</title>
 
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="/assets/icon.png">
+  <link rel="icon" type="image/x-icon" href="assets/icon.png">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,31 +15,6 @@
 
   <!-- External CSS -->
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .embed-container {
-      position: relative;
-      width: 100%;
-      height: 0;
-      padding-bottom: 100%; /* Adjust aspect ratio as needed */
-      overflow: hidden;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      background: #fff;
-    }
-    .embed-container iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-    @media (min-width: 768px) {
-      .embed-container {
-        padding-bottom: 56.25%; /* 16:9 Aspect Ratio for desktop */
-      }
-    }
-  </style>
 </head>
 
 <body>
@@ -58,22 +33,25 @@
           <a href="https://linkedin.com/in/abyasa-wedha/" target="_blank" title="LinkedIn">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
           </a>
-          <button class="lang-switch" onclick="toggleLanguage()">EN | ID</button>
+          <div class="lang-switcher">
+            <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
+            <button class="lang-btn" data-lang="id" onclick="setLanguage('id')">ID</button>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="header-wrapper">
       <div class="logo-group">
-        <img src="/assets/ribbon.svg" alt="BINUS Ribbon" class="header-ribbon">
+        <img src="assets/ribbon.svg" alt="BINUS Ribbon" class="header-ribbon">
         <img src="https://binus.ac.id/malang/wp-content/uploads/2022/08/logo.svg" alt="BINUS Logo">
       </div>
       <nav class="main-nav">
         <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="sat-point.html">Seminar</a></li>
-          <li><a href="competition.html" class="active">Competitions</a></li>
-          <li><a href="community-service.html">Community Service</a></li>
+          <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+          <li><a href="sat-point.html" data-i18n="nav.seminar">Seminar</a></li>
+          <li><a href="competition.html" class="active" data-i18n="nav.competitions">Competitions</a></li>
+          <li><a href="community-service.html" data-i18n="nav.comserv">Community Service</a></li>
         </ul>
       </nav>
     </div>
@@ -81,43 +59,98 @@
 
   <!-- MAIN CONTENT -->
   <main class="content-container">
-    <nav class="breadcrumb">
-      <a href="index.html">Home</a>
-      <span>&gt;</span>
-      <span>Informasi Lomba</span>
-    </nav>
-
     <section class="page-header">
-      <h1>Informasi Lomba 2025</h1>
-      <p>Daftar lomba dan kompetisi terbaru untuk mahasiswa BINUS</p>
+      <h1 data-i18n="page.comp.title">Informasi Lomba 2025</h1>
+      <p data-i18n="page.comp.desc">Daftar lomba dan kompetisi terbaru untuk mahasiswa BINUS</p>
+      
+      <!-- Telegram Button -->
+      <div style="margin-top: 1.5rem;">
+        <a href="https://t.me/your_group_link_here" target="_blank" class="btn btn-telegram">
+          <span style="font-size: 1.2rem; vertical-align: middle; margin-right: 8px;">✈️</span>
+          Join Telegram Group for Live Updates
+        </a>
+      </div>
     </section>
 
     <!-- Filter Section -->
-    <div class="filter-section">
-      <input type="text" id="search-input" class="filter-input" placeholder="Search competitions...">
-      <select id="month-filter" class="filter-select">
-        <option value="">All Months</option>
-        <option value="January">January</option>
-        <option value="February">February</option>
-        <option value="March">March</option>
-        <option value="April">April</option>
-        <option value="May">May</option>
-        <option value="June">June</option>
-        <option value="July">July</option>
-        <option value="August">August</option>
-        <option value="September">September</option>
-        <option value="October">October</option>
-        <option value="November">November</option>
-        <option value="December">December</option>
-      </select>
+    <!-- Advanced Filter Section -->
+    <div class="advanced-filter-box">
+      <div class="filter-header">
+        <h3>🔍 Filters</h3>
+        <button class="filter-toggle-btn" onclick="toggleFilters()">
+          <span class="toggle-icon" id="filter-toggle-icon">−</span>
+        </button>
+      </div>
+      <div class="filter-content" id="filter-content">
+      <!-- Row 1: Search -->
+      <div class="filter-row">
+        <div class="filter-group filter-full-width">
+          <label data-i18n="filter.search.label">Search</label>
+          <div class="search-bar-container">
+            <input type="text" id="search-input" placeholder="Search seminars..." data-i18n="filter.search.seminar">
+            <button class="search-icon-btn">🔍</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Filters -->
+      <div class="filter-row">
+        <!-- Topic Filter -->
+        <div class="filter-group">
+          <label data-i18n="filter.topic.label">Topic / Major</label>
+          <select id="topic-filter" class="filter-select">
+            <option value="" data-i18n="filter.topic.all">All Topics</option>
+            <option value="Technology">Technology (CS, IT)</option>
+            <option value="Business">Business (IBE, Management)</option>
+            <option value="Design">Design (DKV, Fashion)</option>
+            <option value="Engineering">Engineering</option>
+            <option value="Communication">Communication</option>
+          </select>
+        </div>
+
+        <!-- Location Filter -->
+        <div class="filter-group">
+          <label data-i18n="filter.location.label">Location</label>
+          <div class="checkbox-group" id="location-filters">
+            <label class="checkbox-item"><input type="checkbox" value="Online" checked> Online / Zoom</label>
+            <label class="checkbox-item"><input type="checkbox" value="Hybrid" checked> Hybrid</label>
+            <label class="checkbox-item"><input type="checkbox" value="Syahdan" checked> Syahdan Campus</label>
+            <label class="checkbox-item"><input type="checkbox" value="Anggrek" checked> Anggrek Campus</label>
+            <label class="checkbox-item"><input type="checkbox" value="Kijang" checked> Kijang Campus</label>
+            <label class="checkbox-item"><input type="checkbox" value="Alam Sutera" checked> Alam Sutera Campus</label>
+            <label class="checkbox-item"><input type="checkbox" value="JWC" checked> JWC Campus</label>
+            <label class="checkbox-item"><input type="checkbox" value="fX" checked> fX Campus</label>
+            <label class="checkbox-item"><input type="checkbox" value="Malang" checked> Malang Campus</label>
+            <label class="checkbox-item"><input type="checkbox" value="Bandung" checked> Bandung Campus</label>
+            <label class="checkbox-item"><input type="checkbox" value="Bekasi" checked> Bekasi Campus</label>
+          </div>
+        </div>
+
+        <!-- Timeline Filter -->
+        <div class="filter-group">
+          <label>Timeline (Until <span id="month-display">...</span>)</label>
+          <div class="range-container">
+            <input type="range" id="month-slider" min="0" max="6" value="3" class="range-slider">
+            <div class="range-value" id="month-range-text">Until ...</div>
+          </div>
+        </div>
+        
+        <!-- Sort Filter -->
+        <div class="filter-group">
+          <label data-i18n="filter.sort.label">Sort By</label>
+          <select id="sort-filter" class="filter-select">
+            <option value="latest" data-i18n="filter.sort.latest">Latest to Oldest</option>
+            <option value="oldest" data-i18n="filter.sort.oldest">Oldest to Latest</option>
+          </select>
+        </div>
+      </div>
     </div>
 
-    <!-- Competition List -->
     <ul id="competition-list" class="post-roll">
       <!-- Items will be injected here by script.js -->
       <li class="loading-state">
         <div class="spinner"></div>
-        <p>Loading competitions...</p>
+        <p>Loading seminars...</p>
       </li>
     </ul>
   </main>
