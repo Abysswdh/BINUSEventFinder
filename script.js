@@ -241,7 +241,7 @@ function displayCommunityService(items, list) {
     const benefit = item['benefit'] || "";
     const contact = item['contact'] || "";
     const link = item['link pendaftaran'] || "#";
-    const image = item['image'] || 'assets/tfi.jpg';
+    const image = item['image'] || 'assets/TFI.jpg';
 
     const li = document.createElement("li");
     li.className = "post";
