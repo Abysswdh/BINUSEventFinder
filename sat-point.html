@@ -11,7 +11,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- External CSS -->
   <link rel="stylesheet" href="style.css" />
@@ -46,6 +46,11 @@
         <img src="assets/ribbon.svg" alt="BINUS Ribbon" class="header-ribbon">
         <img src="https://binus.ac.id/malang/wp-content/uploads/2022/08/logo.svg" alt="BINUS Logo">
       </div>
+      <button class="hamburger-btn" onclick="toggleMobileNav()" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <nav class="main-nav">
         <ul>
           <li><a href="index.html" data-i18n="nav.home">Home</a></li>
@@ -65,76 +70,50 @@
     </section>
 
     <!-- Filter Section -->
-    <!-- Advanced Filter Section -->
-    <div class="advanced-filter-box">
+    <div class="filter-box">
       <div class="filter-header">
         <h3>🔍 Filters</h3>
-        <button class="filter-toggle-btn" onclick="toggleFilters()">
-          <span class="toggle-icon" id="filter-toggle-icon">−</span>
-        </button>
+        <button class="btn-reset" onclick="resetFilters()">Reset</button>
       </div>
-      <div class="filter-content" id="filter-content">
-      <!-- Row 1: Search -->
-      <div class="filter-row">
-        <div class="filter-group filter-full-width">
-          <label data-i18n="filter.search.label">Search</label>
-          <div class="search-bar-container">
-            <input type="text" id="search-input" placeholder="Search seminars..." data-i18n="filter.search.seminar">
-            <button class="search-icon-btn">🔍</button>
-          </div>
-        </div>
+      
+      <!-- Search Row -->
+      <div class="filter-search-row">
+        <input type="text" id="search-input" placeholder="Search seminars..." class="filter-search">
       </div>
-
-      <!-- Row 2: Filters -->
-      <div class="filter-row">
-        <!-- Topic Filter -->
-        <div class="filter-group">
-          <label data-i18n="filter.topic.label">Topic / Major</label>
-          <select id="topic-filter" class="filter-select">
-            <option value="" data-i18n="filter.topic.all">All Topics</option>
-            <option value="Technology">Technology (CS, IT)</option>
-            <option value="Business">Business (IBE, Management)</option>
-            <option value="Design">Design (DKV, Fashion)</option>
-            <option value="Engineering">Engineering</option>
-            <option value="Communication">Communication</option>
-          </select>
-        </div>
-
-        <!-- Location Filter -->
-        <div class="filter-group">
-          <label data-i18n="filter.location.label">Location</label>
-          <div class="checkbox-group" id="location-filters">
-            <label class="checkbox-item"><input type="checkbox" value="Online" checked> Online / Zoom</label>
-            <label class="checkbox-item"><input type="checkbox" value="Hybrid" checked> Hybrid</label>
-            <label class="checkbox-item"><input type="checkbox" value="Syahdan" checked> Syahdan Campus</label>
-            <label class="checkbox-item"><input type="checkbox" value="Anggrek" checked> Anggrek Campus</label>
-            <label class="checkbox-item"><input type="checkbox" value="Kijang" checked> Kijang Campus</label>
-            <label class="checkbox-item"><input type="checkbox" value="Alam Sutera" checked> Alam Sutera Campus</label>
-            <label class="checkbox-item"><input type="checkbox" value="JWC" checked> JWC Campus</label>
-            <label class="checkbox-item"><input type="checkbox" value="fX" checked> fX Campus</label>
-            <label class="checkbox-item"><input type="checkbox" value="Malang" checked> Malang Campus</label>
-            <label class="checkbox-item"><input type="checkbox" value="Bandung" checked> Bandung Campus</label>
-            <label class="checkbox-item"><input type="checkbox" value="Bekasi" checked> Bekasi Campus</label>
-          </div>
-        </div>
-
-        <!-- Timeline Filter -->
-        <div class="filter-group">
-          <label><span data-i18n="filter.timeline.label">Timeline</span> (<span id="days-display">30</span> <span data-i18n="filter.days">days</span>)</label>
-          <div class="range-container">
-            <input type="range" id="date-slider" min="1" max="90" value="30" class="range-slider">
-            <div class="range-value" id="date-range-text">Next 30 days</div>
-          </div>
-        </div>
+      
+      <!-- Filter Dropdowns Row -->
+      <div class="filter-dropdowns">
+        <select id="topic-filter" class="filter-select">
+          <option value="">All Topics</option>
+          <option value="Technology">Technology</option>
+          <option value="Business">Business</option>
+          <option value="Design">Design</option>
+          <option value="Engineering">Engineering</option>
+          <option value="Communication">Communication</option>
+        </select>
         
-        <!-- Sort Filter -->
-        <div class="filter-group">
-          <label data-i18n="filter.sort.label">Sort By</label>
-          <select id="sort-filter" class="filter-select">
-            <option value="latest" data-i18n="filter.sort.latest">Latest to Oldest</option>
-            <option value="oldest" data-i18n="filter.sort.oldest">Oldest to Latest</option>
-          </select>
-        </div>
+        <select id="location-filter" class="filter-select">
+          <option value="">All Locations</option>
+          <option value="Online">Online / Hybrid</option>
+          <option value="Jakarta">Jakarta Area</option>
+          <option value="Malang">Malang</option>
+          <option value="Bandung">Bandung</option>
+          <option value="Bekasi">Bekasi</option>
+        </select>
+        
+        <select id="month-filter" class="filter-select">
+          <option value="">All Months</option>
+          <option value="2025-10">October 2025</option>
+          <option value="2025-11">November 2025</option>
+          <option value="2025-12">December 2025</option>
+          <option value="2026-01">January 2026</option>
+          <option value="2026-02">February 2026</option>
+        </select>
+        
+        <select id="sort-filter" class="filter-select">
+          <option value="latest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+        </select>
       </div>
     </div>
 

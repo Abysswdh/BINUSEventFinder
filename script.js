@@ -160,22 +160,30 @@ function displayCompetitions(items, list) {
     
     const li = document.createElement("li");
     li.className = "post competition-card";
+    
+    // Choose image based on field
+    let image = 'assets/logo.png';
+    if (field.toLowerCase().includes('teknologi') || field.toLowerCase().includes('tech')) {
+      image = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=200&fit=crop';
+    } else if (field.toLowerCase().includes('bisnis') || field.toLowerCase().includes('business')) {
+      image = 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=200&fit=crop';
+    } else if (field.toLowerCase().includes('desain') || field.toLowerCase().includes('design')) {
+      image = 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=200&fit=crop';
+    }
+    
     li.innerHTML = `
-      <div class="competition-content">
-        <div class="competition-header">
-          <h2 class="post-title">${title}</h2>
-          <span class="level-badge" style="background:${levelColor}">${level}</span>
-        </div>
-        
-        <div class="competition-details">
-          ${field ? `<div class="detail-item"><span class="detail-icon">🎯</span><span>${field}</span></div>` : ''}
-          ${category ? `<div class="detail-item"><span class="detail-icon">📂</span><span>${category}</span></div>` : ''}
-          <div class="detail-item"><span class="detail-icon">📅</span><span>${month}</span></div>
-          ${location ? `<div class="detail-item"><span class="detail-icon">📍</span><span>${location}</span></div>` : ''}
-        </div>
-        
+      <div class="image-box">
+        <img src="${image}" alt="${title}">
+        <span class="level-badge" style="background:${levelColor}">${level}</span>
+      </div>
+      <div class="info-box">
+        <h2 class="post-title">${title}</h2>
+        ${field ? `<p><strong>Field:</strong> ${field}</p>` : ''}
+        ${category ? `<p><strong>Category:</strong> ${category}</p>` : ''}
+        <p><strong>Date:</strong> ${month}</p>
+        ${location ? `<p><strong>Location:</strong> ${location}</p>` : ''}
         <div class="competition-actions">
-          <a href="${link}" target="_blank" class="btn btn-primary">View Details</a>
+          <a href="${link}" target="_blank" class="btn">View Details</a>
           ${statusBadge}
         </div>
       </div>
@@ -206,10 +214,7 @@ async function loadCommunityService() {
     allComserv = await res.json();
     displayCommunityService(allComserv, list);
     const searchFields = [
-      'Title', 'title', 
-      'Nama Kegiatan', 'nama kegiatan', 
-      'Location', 'location', 
-      'Lokasi', 'lokasi'
+      'nama event', 'kategori', 'lokasi', 'benefit'
     ];
     setupFilters(allComserv, displayCommunityService, list, searchFields);
   } catch (err) {
@@ -226,23 +231,35 @@ function displayCommunityService(items, list) {
   }
 
   items.forEach(item => {
-    // Adjust these keys based on your TFI tab columns
-    const title = item['Title'] || item['Nama Kegiatan'] || "Untitled Activity";
-    const date = item['Date'] || item['Tanggal'] || "TBA";
-    const location = item['Location'] || item['Lokasi'] || "Malang";
-    const image = item['Image'] || "https://binus.ac.id/malang/wp-content/uploads/2020/10/Teach-For-Indonesia-BINUS-University-Malang-1.jpg";
+    // TFI sheet columns: kategori, nama event, tanggal, waktu, lokasi, mode/tipe, benefit, contact, link pendaftaran
+    const category = item['kategori'] || "";
+    const title = item['nama event'] || "Untitled Activity";
+    const date = item['tanggal'] || "TBA";
+    const time = item['waktu'] || "";
+    const location = item['lokasi'] || "TBA";
+    const mode = item['mode/tipe'] || "";
+    const benefit = item['benefit'] || "";
+    const contact = item['contact'] || "";
+    const link = item['link pendaftaran'] || "#";
+    const image = item['image'] || 'assets/tfi.jpg';
 
     const li = document.createElement("li");
     li.className = "post";
     li.innerHTML = `
       <div class="image-box">
         <img src="${image}" alt="${title}">
+        ${category ? `<span class="category-badge">${category}</span>` : ''}
       </div>
       <div class="info-box">
         <h2 class="post-title">${title}</h2>
-        <p>${date} • ${location}</p>
+        <p><strong>Date:</strong> ${date} ${time}</p>
+        <p><strong>Location:</strong> ${location}</p>
+        ${mode ? `<p><strong>Mode:</strong> ${mode}</p>` : ''}
+        ${benefit ? `<p><strong>Benefit:</strong> ${benefit}</p>` : ''}
+        ${contact ? `<p><strong>Contact:</strong> ${contact}</p>` : ''}
         <div class="flex flex-wrap gap-2 mt-2">
-          <a href="#" class="btn">Learn More</a>
+           <a href="${link}" target="_blank" class="btn">Register / Detail</a>
+           <a href="${createOutlookLink(title, date, time, location, link)}" target="_blank" class="btn" style="background-color:#28a745;">Add to Outlook</a>
         </div>
       </div>
     `;
@@ -263,20 +280,15 @@ const TOPIC_KEYWORDS = {
 function setupFilters(data, renderFn, listElement, searchFields) {
   const searchInput = document.getElementById('search-input');
   const topicSelect = document.getElementById('topic-filter');
-  const locationCheckboxes = document.querySelectorAll('#location-filters input[type="checkbox"]');
-  const dateSlider = document.getElementById('date-slider');
+  const locationFilter = document.getElementById('location-filter'); // New dropdown
+  const locationCheckboxes = document.querySelectorAll('#location-filters input[type="checkbox"]'); // Legacy checkboxes
+  const monthFilter = document.getElementById('month-filter');
   const monthSlider = document.getElementById('month-slider');
   const sortSelect = document.getElementById('sort-filter');
   
-  // 1. Date Slider (Seminars - Next X Days)
-  if (dateSlider) {
-    const daysDisplay = document.getElementById('days-display');
-    const rangeText = document.getElementById('date-range-text');
-    
-    dateSlider.addEventListener('input', (e) => {
-      const days = e.target.value;
-      if (daysDisplay) daysDisplay.innerText = days;
-      if (rangeText) rangeText.innerText = `Next ${days} days`;
+  // 1. Month Filter (Seminars - Select Month)
+  if (monthFilter) {
+    monthFilter.addEventListener('change', () => {
       filterAndRender(data, renderFn, listElement, searchFields);
     });
   }
@@ -308,13 +320,27 @@ function setupFilters(data, renderFn, listElement, searchFields) {
   if (searchInput) searchInput.addEventListener('input', () => filterAndRender(data, renderFn, listElement, searchFields));
   if (topicSelect) topicSelect.addEventListener('change', () => filterAndRender(data, renderFn, listElement, searchFields));
   if (sortSelect) sortSelect.addEventListener('change', () => filterAndRender(data, renderFn, listElement, searchFields));
+  if (locationFilter) locationFilter.addEventListener('change', () => filterAndRender(data, renderFn, listElement, searchFields));
   
+  // Competition-specific filters
+  const levelFilter = document.getElementById('level-filter');
+  const statusFilter = document.getElementById('status-filter');
+  if (levelFilter) levelFilter.addEventListener('change', () => filterAndRender(data, renderFn, listElement, searchFields));
+  if (statusFilter) statusFilter.addEventListener('change', () => filterAndRender(data, renderFn, listElement, searchFields));
+  
+  // Community service-specific filters
+  const categoryFilter = document.getElementById('category-filter');
+  const modeFilter = document.getElementById('mode-filter');
+  if (categoryFilter) categoryFilter.addEventListener('change', () => filterAndRender(data, renderFn, listElement, searchFields));
+  if (modeFilter) modeFilter.addEventListener('change', () => filterAndRender(data, renderFn, listElement, searchFields));
+  
+  // Legacy: location checkboxes
   locationCheckboxes.forEach(cb => {
     cb.addEventListener('change', () => filterAndRender(data, renderFn, listElement, searchFields));
   });
 
-  // Trigger initial filter to sync UI with default slider values
-  filterAndRender(data, renderFn, listElement, searchFields);
+  // Trigger initial render (no filtering)
+  renderFn(data, listElement);
 }
 
 function parseDate(dateStr) {
@@ -411,7 +437,7 @@ function filterAndRender(data, renderFn, listElement, searchFields) {
   const searchInput = document.getElementById('search-input');
   const topicSelect = document.getElementById('topic-filter');
   const locationCheckboxes = document.querySelectorAll('#location-filters input[type="checkbox"]');
-  const dateSlider = document.getElementById('date-slider');
+  const monthFilter = document.getElementById('month-filter');
   const monthSlider = document.getElementById('month-slider');
   const sortSelect = document.getElementById('sort-filter');
 
@@ -452,58 +478,115 @@ function filterAndRender(data, renderFn, listElement, searchFields) {
       }
     }
 
-    // 3. Location Filter
+    // 3. Location Filter (supports both dropdown and checkboxes)
     let matchesLocation = true;
-    if (locationCheckboxes.length > 0 && selectedLocations.length > 0) {
+    const locationFilter = document.getElementById('location-filter');
+    const locationCheckboxes = document.querySelectorAll('#location-filters input[type="checkbox"]');
+    
+    if (locationFilter && locationFilter.value) {
+      // New dropdown-based filtering
+      const selectedLoc = locationFilter.value.toLowerCase();
       const itemLoc = (item['location'] || item['Location'] || item['Lokasi'] || item['lokasi'] || "").toLowerCase();
-      if (itemLoc) {
-        matchesLocation = selectedLocations.some(loc => itemLoc.includes(loc));
+      
+      if (selectedLoc === 'jakarta') {
+        // Match any Jakarta campus
+        const jakartaCampuses = ['syahdan', 'anggrek', 'kijang', 'alam sutera', 'jwc', 'fx'];
+        matchesLocation = jakartaCampuses.some(campus => itemLoc.includes(campus));
+      } else if (selectedLoc === 'online') {
+        // Match online or hybrid
+        matchesLocation = itemLoc.includes('online') || itemLoc.includes('hybrid') || itemLoc.includes('zoom');
+      } else {
+        // Match specific location
+        matchesLocation = itemLoc.includes(selectedLoc);
+      }
+    } else if (locationCheckboxes.length > 0) {
+      // Legacy checkbox-based filtering
+      const selectedLocations = Array.from(locationCheckboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value.toLowerCase());
+      const allLocationsCount = locationCheckboxes.length;
+      const checkedCount = selectedLocations.length;
+      
+      if (checkedCount === 0) {
+        matchesLocation = false;
+      } else if (checkedCount < allLocationsCount) {
+        const itemLoc = (item['location'] || item['Location'] || item['Lokasi'] || item['lokasi'] || "").toLowerCase();
+        if (itemLoc) {
+          matchesLocation = selectedLocations.some(loc => itemLoc.includes(loc));
+        }
       }
     }
 
-    // 4. Timeline Filter
+    // 4. Month/Timeline Filter
     let matchesTime = true;
     const itemDate = parseSeminarDate(item);
 
-    if (itemDate) {
-      itemDate.setHours(0, 0, 0, 0);
-
-      if (dateSlider) {
-        // Seminars: Next X Days
-        const maxDays = parseInt(dateSlider.value);
-        const futureLimit = new Date(now);
-        futureLimit.setDate(now.getDate() + maxDays);
-        
-        // Strict future filter: Today <= Event <= Today + X
-        // Allow slightly past events (e.g. earlier today) by checking >= now - 1 day
-        const yesterday = new Date(now);
-        yesterday.setDate(now.getDate() - 1);
-        
-        if (itemDate < yesterday || itemDate > futureLimit) {
-           matchesTime = false;
-        }
-      } else if (monthSlider) {
-        // Competitions: Until Month Year
-        const monthsToAdd = parseInt(monthSlider.value);
-        const limitDate = new Date(now);
-        limitDate.setMonth(limitDate.getMonth() + monthsToAdd);
-        limitDate.setMonth(limitDate.getMonth() + 1);
-        limitDate.setDate(0); // End of target month
-        
-        // Similarly, don't hide slightly past events or current month events aggressively
-        const pastLimit = new Date(now);
-        pastLimit.setMonth(now.getMonth() - 2); // Show recent past (2 months) to avoid empty lists
-
-        if (itemDate < pastLimit || itemDate > limitDate) {
-           matchesTime = false;
-        }
+    if (monthFilter && monthFilter.value) {
+      // Seminars: Filter by selected month (e.g., "2025-10")
+      const selectedMonth = monthFilter.value;
+      const dateStr = item['date'] || item['Date'] || '';
+      if (dateStr && !dateStr.startsWith(selectedMonth)) {
+        matchesTime = false;
       }
-    } else {
-      // If no date found (TBA), always show it
-      matchesTime = true;
+    } else if (monthSlider && itemDate) {
+      // Competitions: Until Month Year
+      itemDate.setHours(0, 0, 0, 0);
+      const monthsToAdd = parseInt(monthSlider.value);
+      const limitDate = new Date(now);
+      limitDate.setMonth(limitDate.getMonth() + monthsToAdd);
+      limitDate.setMonth(limitDate.getMonth() + 1);
+      limitDate.setDate(0); // End of target month
+      
+      const pastLimit = new Date(now);
+      pastLimit.setMonth(now.getMonth() - 2);
+
+      if (itemDate < pastLimit || itemDate > limitDate) {
+        matchesTime = false;
+      }
+    }
+    // If no filter applied or no date found (TBA), matchesTime stays true
+
+    // 5. Level Filter (Competitions only)
+    let matchesLevel = true;
+    const levelFilter = document.getElementById('level-filter');
+    if (levelFilter && levelFilter.value) {
+      const selectedLevel = levelFilter.value.toLowerCase();
+      const itemLevel = (item['level'] || item['Level'] || "").toLowerCase();
+      matchesLevel = itemLevel.includes(selectedLevel);
     }
 
-    return matchesSearch && matchesTopic && matchesLocation && matchesTime;
+    // 6. Status Filter (Competitions only)
+    let matchesStatus = true;
+    const statusFilter = document.getElementById('status-filter');
+    if (statusFilter && statusFilter.value) {
+      const selectedStatus = statusFilter.value.toLowerCase();
+      const itemStatus = (item['status pendaftaran'] || item['Status Pendaftaran'] || "").toLowerCase();
+      if (selectedStatus === 'open') {
+        matchesStatus = itemStatus.includes('buka') || itemStatus.includes('open');
+      } else if (selectedStatus === 'closed') {
+        matchesStatus = itemStatus.includes('tutup') || itemStatus.includes('closed');
+      }
+    }
+
+    // 7. Category Filter (Community Service only)
+    let matchesCategory = true;
+    const categoryFilter = document.getElementById('category-filter');
+    if (categoryFilter && categoryFilter.value) {
+      const selectedCategory = categoryFilter.value.toLowerCase();
+      const itemCategory = (item['kategori'] || "").toLowerCase();
+      matchesCategory = itemCategory.includes(selectedCategory);
+    }
+
+    // 8. Mode Filter (Community Service only)
+    let matchesMode = true;
+    const modeFilter = document.getElementById('mode-filter');
+    if (modeFilter && modeFilter.value) {
+      const selectedMode = modeFilter.value.toLowerCase();
+      const itemMode = (item['mode/tipe'] || "").toLowerCase();
+      matchesMode = itemMode.includes(selectedMode);
+    }
+
+    return matchesSearch && matchesTopic && matchesLocation && matchesTime && matchesLevel && matchesStatus && matchesCategory && matchesMode;
   });
 
   // 5. Sorting
@@ -521,41 +604,7 @@ function filterAndRender(data, renderFn, listElement, searchFields) {
   renderFn(filtered, listElement);
 }
 
-function displayCompetitions(items, list) {
-  list.innerHTML = "";
-  if (items.length === 0) {
-    list.innerHTML = `<p style="text-align:center;color:#999;grid-column:1/-1;">No competitions found matching your criteria.</p>`;
-    return;
-  }
 
-  items.forEach(item => {
-    const title = item['nama lomba'] || item['Nama Lomba'] || "Untitled Competition";
-    const field = item['bidang umum'] || item['Bidang Umum'] || "";
-    const category = item['cabang'] || item['Cabang'] || "";
-    const month = item['bulan pelaksanaan'] || item['Bulan Pelaksanaan'] || "TBA";
-    const level = item['level'] || item['Level'] || "Nasional";
-    const status = item['status pendaftaran'] || item['Status Pendaftaran'] || "";
-    const location = item['lokasi'] || item['Lokasi'] || "";
-    const link = item['link'] || item['Link'] || "#";
-    
-    const li = document.createElement("li");
-    li.className = "post";
-    li.innerHTML = `
-      <div class="info-box">
-        <h2 class="post-title">${title}</h2>
-        <p><strong>Field:</strong> ${field} (${category})</p>
-        <p><strong>Date:</strong> ${month}</p>
-        <p><strong>Level:</strong> ${level}</p>
-        <p><strong>Location:</strong> ${location}</p>
-        <p><strong>Status:</strong> ${status}</p>
-        <div class="flex flex-wrap gap-2 mt-2">
-           <a href="${link}" target="_blank" class="btn">Register / Info</a>
-        </div>
-      </div>
-    `;
-    list.appendChild(li);
-  });
-}
 
 // === TOGGLE FILTERS ===
 function toggleFilters() {
@@ -566,6 +615,72 @@ function toggleFilters() {
     filterContent.classList.toggle('collapsed');
     toggleIcon.textContent = filterContent.classList.contains('collapsed') ? '+' : '−';
   }
+}
+
+// === TOGGLE MOBILE NAV ===
+function toggleMobileNav() {
+  const nav = document.querySelector('.main-nav');
+  const hamburger = document.querySelector('.hamburger-btn');
+  
+  if (nav && hamburger) {
+    nav.classList.toggle('open');
+    hamburger.classList.toggle('active');
+  }
+}
+
+// === RESET FILTERS ===
+function resetFilters() {
+  // Reset search
+  const searchInput = document.getElementById('search-input');
+  if (searchInput) searchInput.value = '';
+  
+  // Reset dropdowns
+  const topicFilter = document.getElementById('topic-filter');
+  const locationFilter = document.getElementById('location-filter');
+  const monthFilter = document.getElementById('month-filter');
+  const sortFilter = document.getElementById('sort-filter');
+  const monthSlider = document.getElementById('month-slider');
+  
+  if (topicFilter) topicFilter.value = '';
+  if (locationFilter) locationFilter.value = '';
+  if (monthFilter) monthFilter.value = '';
+  if (sortFilter) sortFilter.value = 'latest';
+  
+  // Reset competition-specific filters
+  const levelFilter = document.getElementById('level-filter');
+  const statusFilter = document.getElementById('status-filter');
+  if (levelFilter) levelFilter.value = '';
+  if (statusFilter) statusFilter.value = '';
+  
+  // Reset community service-specific filters
+  const categoryFilter = document.getElementById('category-filter');
+  const modeFilter = document.getElementById('mode-filter');
+  if (categoryFilter) categoryFilter.value = '';
+  if (modeFilter) modeFilter.value = '';
+  if (monthSlider) {
+    monthSlider.value = 3;
+    // Update label
+    const monthDisplay = document.getElementById('month-display');
+    const rangeText = document.getElementById('month-range-text');
+    const d = new Date();
+    d.setMonth(d.getMonth() + 3);
+    const label = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    if (monthDisplay) monthDisplay.innerText = label;
+    if (rangeText) rangeText.innerText = `Until ${label}`;
+  }
+  
+  // Reset checkboxes (if any)
+  const checkboxes = document.querySelectorAll('#location-filters input[type="checkbox"]');
+  checkboxes.forEach(cb => cb.checked = true);
+  
+  // Re-render with all data
+  const eventList = document.getElementById('event-list');
+  const compList = document.getElementById('competition-list');
+  const comservList = document.getElementById('comserv-list');
+  
+  if (eventList && allEvents.length > 0) displayEvents(allEvents, eventList);
+  if (compList && allCompetitions.length > 0) displayCompetitions(allCompetitions, compList);
+  if (comservList && allComserv.length > 0) displayCommunityService(allComserv, comservList);
 }
 
 // === INIT ===

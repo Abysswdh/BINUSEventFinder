@@ -11,7 +11,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- External CSS -->
   <link rel="stylesheet" href="style.css" />
@@ -38,7 +38,7 @@
     
     .category-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 2rem;
       margin-bottom: 4rem;
     }
@@ -117,6 +117,11 @@
         <img src="assets/ribbon.svg" alt="BINUS Ribbon" class="header-ribbon">
         <img src="https://binus.ac.id/malang/wp-content/uploads/2022/08/logo.svg" alt="BINUS Logo">
       </div>
+      <button class="hamburger-btn" onclick="toggleMobileNav()" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <nav class="main-nav">
         <ul>
           <li><a href="index.html" class="active" data-i18n="nav.home">Home</a></li>
