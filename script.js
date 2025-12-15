@@ -13,16 +13,16 @@ function getSheetUrl(sheetId, sheetName) {
 }
 
 function createOutlookLink(title, dateStr, timeStr, location, desc) {
-  // Helper to create an Outlook calendar link
-  // Using the correct Outlook.com calendar deeplink format
+  // Create Outlook calendar deeplink with proper parameters
+  const params = new URLSearchParams({
+    path: '/calendar/action/compose',
+    rru: 'addevent',
+    subject: title || 'BINUS Event',
+    body: `Register here: ${desc}`,
+    location: location || 'BINUS University'
+  });
   
-  const subject = encodeURIComponent(title);
-  const body = encodeURIComponent(`Event Details:\n\nLocation: ${location}\nRegister here: ${desc}`);
-  const loc = encodeURIComponent(location);
-  
-  // Correct format for Outlook.com calendar
-  // This opens the compose new event window directly
-  return `https://outlook.live.com/calendar/0/action/compose?subject=${subject}&body=${body}&location=${loc}`;
+  return `https://outlook.office.com/calendar/0/deeplink/compose?${params.toString()}`;
 }
 
 
