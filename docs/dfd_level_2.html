@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFD Level 2 - BINUS Event Finder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 30px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        
+        svg text {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Color-coded regions */
+        .region-filter {
+            fill: #E8F5E9;
+            stroke: #4CAF50;
+        }
+        
+        .region-data {
+            fill: #FFF3E0;
+            stroke: #FF9800;
+        }
+        
+        .region-render {
+            fill: #E3F2FD;
+            stroke: #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Data Flow Diagram (Level 2)</h1>
+        <p style="color: #666; margin-bottom: 20px;">Decomposition of Process 4.0 (Filter & Pencarian)</p>
+        
+        <svg viewBox="0 0 1100 550">
+            <!-- Definitions for arrow markers -->
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+                </marker>
+            </defs>
+            
+            <!-- Background regions -->
+            <rect x="200" y="50" width="700" height="450" rx="20" fill="#FEF9E7" stroke="#F4D03F" stroke-width="2" stroke-dasharray="5,5"/>
+            <text x="220" y="80" font-size="12" fill="#9A7B0A" font-weight="bold">Process 4.0: Filter & Pencarian</text>
+            
+            <!-- External: Mahasiswa -->
+            <ellipse cx="80" cy="280" rx="55" ry="35" fill="#F5A623"/>
+            <text x="80" y="285" text-anchor="middle" font-weight="bold" font-size="11">Mahasiswa</text>
+            
+            <!-- Input from Process 3 (Event List) -->
+            <rect x="200" y="250" width="100" height="35" fill="#B8E0E8" stroke="#333" stroke-width="1"/>
+            <line x1="200" y1="265" x2="300" y2="265" stroke="#333" stroke-width="1"/>
+            <text x="210" y="262" font-size="9" font-weight="bold">D1</text>
+            <text x="250" y="280" text-anchor="middle" font-size="9">Event Data</text>
+            
+            <!-- Process 4.1: Filter by Search -->
+            <rect x="350" y="80" width="130" height="45" rx="15" fill="#F8C8DC" stroke="#E91E63" stroke-width="2"/>
+            <text x="358" y="95" font-size="9" font-weight="bold">4.1</text>
+            <text x="415" y="105" text-anchor="middle" font-size="10">Filter by</text>
+            <text x="415" y="117" text-anchor="middle" font-size="10">Search Query</text>
+            
+            <!-- Process 4.2: Filter by Topic -->
+            <rect x="350" y="150" width="130" height="45" rx="15" fill="#F8C8DC" stroke="#E91E63" stroke-width="2"/>
+            <text x="358" y="165" font-size="9" font-weight="bold">4.2</text>
+            <text x="415" y="175" text-anchor="middle" font-size="10">Filter by</text>
+            <text x="415" y="187" text-anchor="middle" font-size="10">Topic/Category</text>
+            
+            <!-- Process 4.3: Filter by Location -->
+            <rect x="350" y="220" width="130" height="45" rx="15" fill="#F8C8DC" stroke="#E91E63" stroke-width="2"/>
+            <text x="358" y="235" font-size="9" font-weight="bold">4.3</text>
+            <text x="415" y="245" text-anchor="middle" font-size="10">Filter by</text>
+            <text x="415" y="257" text-anchor="middle" font-size="10">Location</text>
+            
+            <!-- Process 4.4: Filter by Date -->
+            <rect x="350" y="290" width="130" height="45" rx="15" fill="#F8C8DC" stroke="#E91E63" stroke-width="2"/>
+            <text x="358" y="305" font-size="9" font-weight="bold">4.4</text>
+            <text x="415" y="315" text-anchor="middle" font-size="10">Filter by</text>
+            <text x="415" y="327" text-anchor="middle" font-size="10">Date/Timeline</text>
+            
+            <!-- Process 4.5: Sort Results -->
+            <rect x="350" y="360" width="130" height="45" rx="15" fill="#F8C8DC" stroke="#E91E63" stroke-width="2"/>
+            <text x="358" y="375" font-size="9" font-weight="bold">4.5</text>
+            <text x="415" y="388" text-anchor="middle" font-size="10">Sort Results</text>
+            
+            <!-- Process 4.6: Combine Filters -->
+            <rect x="550" y="220" width="130" height="60" rx="20" fill="#F8C8DC" stroke="#E91E63" stroke-width="2"/>
+            <text x="560" y="235" font-size="9" font-weight="bold">4.6</text>
+            <text x="615" y="250" text-anchor="middle" font-size="10">Combine</text>
+            <text x="615" y="264" text-anchor="middle" font-size="10">Filter Results</text>
+            
+            <!-- Output: Filtered Events -->
+            <rect x="750" y="230" width="120" height="40" fill="#C8E6C9" stroke="#388E3C" stroke-width="2"/>
+            <text x="810" y="255" text-anchor="middle" font-size="10" font-weight="bold">Filtered Events</text>
+            
+            <!-- Data Flows -->
+            
+            <!-- Mahasiswa to filters (criteria inputs) -->
+            <path d="M 130 260 Q 200 100 345 100" stroke="#333" stroke-width="1.5" fill="none" marker-end="url(#arrowhead)"/>
+            <text x="180" y="150" font-size="8">Search query</text>
+            
+            <path d="M 130 265 Q 220 172 345 172" stroke="#333" stroke-width="1.5" fill="none" marker-end="url(#arrowhead)"/>
+            <text x="180" y="200" font-size="8">Topic selection</text>
+            
+            <line x1="135" y1="275" x2="345" y2="242" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <text x="200" y="250" font-size="8">Location selection</text>
+            
+            <path d="M 130 290 Q 220 312 345 312" stroke="#333" stroke-width="1.5" fill="none" marker-end="url(#arrowhead)"/>
+            <text x="180" y="320" font-size="8">Date range</text>
+            
+            <path d="M 130 300 Q 200 382 345 382" stroke="#333" stroke-width="1.5" fill="none" marker-end="url(#arrowhead)"/>
+            <text x="180" y="370" font-size="8">Sort option</text>
+            
+            <!-- Data Store to all filters -->
+            <line x1="300" y1="260" x2="345" y2="102" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+            <line x1="300" y1="265" x2="345" y2="172" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+            <line x1="300" y1="268" x2="345" y2="242" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+            <line x1="300" y1="272" x2="345" y2="312" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+            <line x1="300" y1="275" x2="345" y2="382" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+            
+            <!-- All filters to Combine -->
+            <line x1="480" y1="102" x2="545" y2="235" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <line x1="480" y1="172" x2="545" y2="240" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <line x1="480" y1="242" x2="545" y2="250" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <line x1="480" y1="312" x2="545" y2="260" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <line x1="480" y1="382" x2="545" y2="270" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            
+            <!-- Combine to Output -->
+            <line x1="680" y1="250" x2="745" y2="250" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+            <text x="695" y="240" font-size="9">Filtered list</text>
+            
+            <!-- Output to Process 5 -->
+            <line x1="870" y1="250" x2="950" y2="250" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+            <text x="920" y="240" font-size="9">To Process 5</text>
+            <text x="920" y="255" font-size="9">(Rendering)</text>
+            
+            <!-- Legend -->
+            <rect x="750" y="400" width="80" height="30" rx="4" fill="#F5A623"/>
+            <text x="790" y="420" text-anchor="middle" font-size="9">Entity</text>
+            
+            <rect x="840" y="400" width="80" height="30" rx="12" fill="#F8C8DC" stroke="#E91E63" stroke-width="1.5"/>
+            <text x="880" y="420" text-anchor="middle" font-size="9">Process</text>
+            
+            <rect x="930" y="400" width="80" height="30" fill="#B8E0E8" stroke="#333" stroke-width="1"/>
+            <text x="970" y="420" text-anchor="middle" font-size="9">Data Store</text>
+        </svg>
+    </div>
+</body>
+</html>

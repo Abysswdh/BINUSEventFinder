@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Diagram - BINUS Event Finder</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #fff;
+            padding: 20px;
+        }
+        h1 { font-size: 28px; margin-bottom: 20px; }
+        
+        .diagram {
+            width: 1100px;
+            height: 850px;
+            position: relative;
+            margin: 0 auto;
+        }
+        
+        /* Class Box */
+        .class-box {
+            position: absolute;
+            border: 1.5px solid #333;
+            background: #fff;
+            min-width: 150px;
+            font-size: 11px;
+            z-index: 5;
+        }
+        .class-header {
+            background: #7ec8c8;
+            border-bottom: 1.5px solid #333;
+            padding: 6px 10px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 12px;
+        }
+        .class-attrs, .class-methods {
+            padding: 6px 10px;
+            border-bottom: 1.5px solid #333;
+        }
+        .class-methods { border-bottom: none; }
+        .class-attrs div, .class-methods div { margin: 2px 0; }
+        .attr::before { content: '- '; }
+        .method::before { content: '+ '; }
+        
+        /* SVG Lines */
+        svg.lines {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .line { stroke: #333; stroke-width: 1.5; fill: none; }
+        
+        @media print {
+            @page { size: A4 landscape; margin: 5mm; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Class Diagram</h1>
+    
+    <div class="diagram">
+        
+        <!-- SVG Relationship Lines -->
+        <svg class="lines" viewBox="0 0 1100 850">
+            <defs>
+                <!-- Inheritance Arrow (hollow triangle) -->
+                <marker id="inherit" markerWidth="12" markerHeight="12" refX="12" refY="6" orient="auto">
+                    <polygon points="0,0 12,6 0,12" fill="#fff" stroke="#333" stroke-width="1.5"/>
+                </marker>
+                <!-- Association Arrow -->
+                <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+                    <polygon points="0,0 10,5 0,10" fill="#333"/>
+                </marker>
+                <!-- Diamond (aggregation) -->
+                <marker id="diamond" markerWidth="12" markerHeight="12" refX="0" refY="6" orient="auto">
+                    <polygon points="6,0 12,6 6,12 0,6" fill="#fff" stroke="#333" stroke-width="1"/>
+                </marker>
+            </defs>
+            
+            <!-- INHERITANCE: Event -> Seminar, Competition, CommunityService -->
+            <!-- Event bottom center: (550, 175) -->
+            <!-- Vertical line down from Event -->
+            <line class="line" x1="550" y1="175" x2="550" y2="210"/>
+            <!-- Horizontal connector -->
+            <line class="line" x1="120" y1="210" x2="880" y2="210"/>
+            <!-- Line up to Competition -->
+            <line class="line" x1="120" y1="210" x2="120" y2="240" marker-end="url(#inherit)"/>
+            <!-- Line up to Seminar -->
+            <line class="line" x1="400" y1="210" x2="400" y2="240" marker-end="url(#inherit)"/>
+            <!-- Line up to CommunityService -->
+            <line class="line" x1="700" y1="210" x2="700" y2="240" marker-end="url(#inherit)"/>
+            
+            <!-- ASSOCIATION: Student -> Event (views) -->
+            <!-- Student right edge: (230, 560) -> Event left edge: (470, 100) -->
+            <path class="line" d="M 230 560 Q 350 400 470 140" marker-end="url(#arrow)"/>
+            <text x="300" y="440" font-size="10">views</text>
+            <text x="250" y="545" font-size="10">*</text>
+            <text x="455" y="160" font-size="10">*</text>
+            
+            <!-- ASSOCIATION: Student -> Filter (uses) -->
+            <!-- Student bottom: (120, 650) -> Filter top: (120, 690) -->
+            <line class="line" x1="120" y1="655" x2="120" y2="690"/>
+            <text x="130" y="675" font-size="10">1</text>
+            
+            <!-- ASSOCIATION: Seminar -> OutlookCalendar -->
+            <!-- Seminar bottom: (400, 430) -> Outlook top: (400, 520) -->
+            <line class="line" x1="400" y1="435" x2="400" y2="520"/>
+            <text x="410" y="475" font-size="10">uses</text>
+            <text x="410" y="510" font-size="10">1</text>
+            
+            <!-- ASSOCIATION: GoogleSheetsAPI -> Event -->
+            <!-- API top: (700, 520) -> Event right: (630, 100) -->
+            <path class="line" d="M 700 520 Q 680 350 620 175" marker-end="url(#arrow)"/>
+            <text x="660" y="350" font-size="10">fetches</text>
+            <text x="690" y="510" font-size="10">1</text>
+            <text x="625" y="190" font-size="10">*</text>
+            
+            <!-- ASSOCIATION: EventOrganizer -> GoogleSheetsAPI -->
+            <!-- Organizer left: (870, 370) -> API right: (800, 580) -->
+            <path class="line" d="M 870 380 L 800 520"/>
+            <text x="820" y="440" font-size="10">uploads</text>
+            <text x="860" y="395" font-size="10">1</text>
+            <text x="790" y="510" font-size="10">1</text>
+            
+            <!-- ASSOCIATION: EventOrganizer -> Language -->
+            <!-- Organizer bottom: (950, 450) -> Language top: (950, 530) -->
+            <line class="line" x1="950" y1="455" x2="950" y2="530"/>
+            <text x="960" y="490" font-size="10">1</text>
+            
+            <!-- ASSOCIATION: Student -> Language -->
+            <!-- Student right: (230, 600) -> Language left: (870, 600) -->
+            <path class="line" d="M 230 620 L 870 600"/>
+            <text x="500" y="595" font-size="10">uses language</text>
+            
+        </svg>
+        
+        <!-- EVENT (Parent Class) - Top Center -->
+        <div class="class-box" style="left: 470px; top: 20px; width: 160px;">
+            <div class="class-header">Event</div>
+            <div class="class-attrs">
+                <div class="attr">title : String</div>
+                <div class="attr">date : String</div>
+                <div class="attr">time : String</div>
+                <div class="attr">location : String</div>
+                <div class="attr">link : String</div>
+                <div class="attr">image : String</div>
+            </div>
+            <div class="class-methods">
+                <div class="method">getDetails()</div>
+                <div class="method">register()</div>
+            </div>
+        </div>
+        
+        <!-- COMPETITION - Left child -->
+        <div class="class-box" style="left: 40px; top: 250px; width: 160px;">
+            <div class="class-header">Competition</div>
+            <div class="class-attrs">
+                <div class="attr">level : String</div>
+                <div class="attr">status : String</div>
+                <div class="attr">field : String</div>
+                <div class="attr">category : String</div>
+            </div>
+            <div class="class-methods">
+                <div class="method">checkStatus()</div>
+                <div class="method">getLevel()</div>
+            </div>
+        </div>
+        
+        <!-- SEMINAR - Center child -->
+        <div class="class-box" style="left: 320px; top: 250px; width: 160px;">
+            <div class="class-header">Seminar</div>
+            <div class="class-attrs">
+                <div class="attr">satPoints : int</div>
+                <div class="attr">topic : String</div>
+                <div class="attr">speaker : String</div>
+            </div>
+            <div class="class-methods">
+                <div class="method">addToOutlook()</div>
+                <div class="method">getSatPoints()</div>
+            </div>
+        </div>
+        
+        <!-- COMMUNITY SERVICE - Right child -->
+        <div class="class-box" style="left: 620px; top: 250px; width: 160px;">
+            <div class="class-header">CommunityService</div>
+            <div class="class-attrs">
+                <div class="attr">kategori : String</div>
+                <div class="attr">mode : String</div>
+                <div class="attr">benefit : String</div>
+                <div class="attr">contact : String</div>
+            </div>
+            <div class="class-methods">
+                <div class="method">getKategori()</div>
+                <div class="method">getMode()</div>
+            </div>
+        </div>
+        
+        <!-- STUDENT - Bottom Left -->
+        <div class="class-box" style="left: 40px; top: 500px; width: 180px;">
+            <div class="class-header">Student</div>
+            <div class="class-attrs">
+                <div class="attr">name : String</div>
+                <div class="attr">email : String</div>
+                <div class="attr">language : String</div>
+            </div>
+            <div class="class-methods">
+                <div class="method">viewEvents()</div>
+                <div class="method">filterEvents()</div>
+                <div class="method">changeLanguage()</div>
+                <div class="method">registerEvent()</div>
+            </div>
+        </div>
+        
+        <!-- FILTER - Bottom Left under Student -->
+        <div class="class-box" style="left: 40px; top: 700px; width: 180px;">
+            <div class="class-header">Filter</div>
+            <div class="class-attrs">
+                <div class="attr">searchTerm : String</div>
+                <div class="attr">topic : String</div>
+                <div class="attr">location : String</div>
+                <div class="attr">sortOrder : String</div>
+            </div>
+            <div class="class-methods">
+                <div class="method">apply()</div>
+                <div class="method">reset()</div>
+            </div>
+        </div>
+        
+        <!-- OUTLOOK CALENDAR - Center under Seminar -->
+        <div class="class-box" style="left: 320px; top: 530px; width: 160px;">
+            <div class="class-header">OutlookCalendar</div>
+            <div class="class-attrs">
+                <div class="attr">baseUrl : String</div>
+            </div>
+            <div class="class-methods">
+                <div class="method">generateLink()</div>
+                <div class="method">openCalendar()</div>
+            </div>
+        </div>
+        
+        <!-- GOOGLE SHEETS API - Right under CommunityService -->
+        <div class="class-box" style="left: 620px; top: 530px; width: 160px;">
+            <div class="class-header">GoogleSheetsAPI</div>
+            <div class="class-attrs">
+                <div class="attr">sheetId : String</div>
+                <div class="attr">tabName : String</div>
+                <div class="attr">baseUrl : String</div>
+            </div>
+            <div class="class-methods">
+                <div class="method">fetchData()</div>
+                <div class="method">parseJSON()</div>
+            </div>
+        </div>
+        
+        <!-- EVENT ORGANIZER - Far Right -->
+        <div class="class-box" style="left: 870px; top: 280px; width: 160px;">
+            <div class="class-header">EventOrganizer</div>
+            <div class="class-attrs">
+                <div class="attr">name : String</div>
+                <div class="attr">organization : String</div>
+                <div class="attr">email : String</div>
+            </div>
+            <div class="class-methods">
+                <div class="method">uploadEvent()</div>
+                <div class="method">updateEvent()</div>
+                <div class="method">viewStatistics()</div>
+            </div>
+        </div>
+        
+        <!-- LANGUAGE - Far Right Bottom -->
+        <div class="class-box" style="left: 870px; top: 540px; width: 160px;">
+            <div class="class-header">Language</div>
+            <div class="class-attrs">
+                <div class="attr">code : String</div>
+                <div class="attr">translations : Map</div>
+            </div>
+            <div class="class-methods">
+                <div class="method">setLanguage()</div>
+                <div class="method">translate()</div>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

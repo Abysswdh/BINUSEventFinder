@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use Case Diagram - BINUS Event Finder</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .diagram-container {
+            width: 1000px;
+            height: 750px;
+            position: relative;
+        }
+        
+        /* System Boundary */
+        .system-box {
+            position: absolute;
+            left: 150px;
+            top: 30px;
+            width: 700px;
+            height: 680px;
+            border: 2px solid #888;
+            border-radius: 25px;
+            background: #f8f5ef;
+        }
+        .system-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            padding-top: 15px;
+        }
+        
+        /* Actors */
+        .actor {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+        .actor svg {
+            width: 50px;
+            height: 70px;
+        }
+        .actor-label {
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            margin-top: 5px;
+        }
+        
+        /* Actor Positions */
+        .student { left: 30px; top: 320px; }
+        .student .actor-label { color: #e74c3c; }
+        
+        .organizer { right: 30px; top: 320px; }
+        .organizer .actor-label { color: #27ae60; }
+        
+        /* Use Cases */
+        .usecase {
+            position: absolute;
+            background: #f5eedf;
+            border: 1.5px solid #666;
+            border-radius: 50%;
+            width: 130px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 12px;
+            color: #333;
+            padding: 5px 10px;
+            z-index: 5;
+        }
+        
+        /* SVG Lines */
+        svg.lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        @media print {
+            body { background: white; }
+            @page { size: A4 landscape; margin: 10mm; }
+        }
+    </style>
+</head>
+<body>
+    <div class="diagram-container">
+        
+        <!-- SVG Lines Layer -->
+        <svg class="lines" viewBox="0 0 1000 750">
+            <!-- Student Lines (Red/Coral) -->
+            <path d="M 80 355 Q 120 355 180 120" stroke="#e74c3c" stroke-width="2" fill="none"/>
+            <path d="M 80 355 Q 120 250 200 190" stroke="#e74c3c" stroke-width="2" fill="none"/>
+            <path d="M 80 355 Q 130 320 200 270" stroke="#e74c3c" stroke-width="2" fill="none"/>
+            <path d="M 80 355 Q 130 355 200 350" stroke="#e74c3c" stroke-width="2" fill="none"/>
+            <path d="M 80 355 Q 130 400 200 430" stroke="#e74c3c" stroke-width="2" fill="none"/>
+            <path d="M 80 355 Q 120 480 200 510" stroke="#e74c3c" stroke-width="2" fill="none"/>
+            <path d="M 80 355 Q 110 550 200 590" stroke="#e74c3c" stroke-width="2" fill="none"/>
+            
+            <!-- Organizer Lines (Green) -->
+            <path d="M 920 355 Q 880 150 800 120" stroke="#27ae60" stroke-width="2" fill="none"/>
+            <path d="M 920 355 Q 880 220 800 200" stroke="#27ae60" stroke-width="2" fill="none"/>
+            <path d="M 920 355 Q 850 290 800 280" stroke="#27ae60" stroke-width="2" fill="none"/>
+            <path d="M 920 355 Q 850 380 800 360" stroke="#27ae60" stroke-width="2" fill="none"/>
+            
+            <!-- Include relationship (dashed) -->
+            <path d="M 330 350 L 450 280" stroke="#333" stroke-width="1.5" stroke-dasharray="6,4" fill="none"/>
+            <text x="365" y="300" font-size="11" fill="#333">&lt;&lt;include&gt;&gt;</text>
+            
+            <path d="M 330 430 L 450 480" stroke="#333" stroke-width="1.5" stroke-dasharray="6,4" fill="none"/>
+            <text x="365" y="470" font-size="11" fill="#333">&lt;&lt;include&gt;&gt;</text>
+        </svg>
+        
+        <!-- System Boundary -->
+        <div class="system-box">
+            <div class="system-title">BINUS Event Finder</div>
+        </div>
+        
+        <!-- Student Actor (Left) -->
+        <div class="actor student">
+            <svg viewBox="0 0 50 70">
+                <circle cx="25" cy="10" r="8" fill="none" stroke="#e74c3c" stroke-width="2"/>
+                <line x1="25" y1="18" x2="25" y2="42" stroke="#e74c3c" stroke-width="2"/>
+                <line x1="10" y1="28" x2="40" y2="28" stroke="#e74c3c" stroke-width="2"/>
+                <line x1="25" y1="42" x2="12" y2="65" stroke="#e74c3c" stroke-width="2"/>
+                <line x1="25" y1="42" x2="38" y2="65" stroke="#e74c3c" stroke-width="2"/>
+            </svg>
+            <div class="actor-label">Student</div>
+        </div>
+        
+        <!-- Event Organizer Actor (Right) -->
+        <div class="actor organizer">
+            <svg viewBox="0 0 50 70">
+                <circle cx="25" cy="10" r="8" fill="none" stroke="#27ae60" stroke-width="2"/>
+                <line x1="25" y1="18" x2="25" y2="42" stroke="#27ae60" stroke-width="2"/>
+                <line x1="10" y1="28" x2="40" y2="28" stroke="#27ae60" stroke-width="2"/>
+                <line x1="25" y1="42" x2="12" y2="65" stroke="#27ae60" stroke-width="2"/>
+                <line x1="25" y1="42" x2="38" y2="65" stroke="#27ae60" stroke-width="2"/>
+            </svg>
+            <div class="actor-label">Event<br/>Organizer</div>
+        </div>
+        
+        <!-- Use Cases (Student side - Left) -->
+        <div class="usecase" style="left: 200px; top: 85px;">View Seminars</div>
+        <div class="usecase" style="left: 200px; top: 165px;">View Competitions</div>
+        <div class="usecase" style="left: 200px; top: 245px;">View Community<br/>Service</div>
+        <div class="usecase" style="left: 200px; top: 325px;">Filter &amp; Search<br/>Events</div>
+        <div class="usecase" style="left: 200px; top: 405px;">Register for<br/>Event</div>
+        <div class="usecase" style="left: 200px; top: 485px;">Add Event to<br/>Outlook</div>
+        <div class="usecase" style="left: 200px; top: 565px;">Change<br/>Language</div>
+        
+        <!-- Use Cases (Shared/Center) -->
+        <div class="usecase" style="left: 435px; top: 245px;">View Event<br/>Details</div>
+        <div class="usecase" style="left: 435px; top: 445px;">Contact<br/>Organizer</div>
+        
+        <!-- Use Cases (Organizer side - Right) -->
+        <div class="usecase" style="left: 670px; top: 85px;">Upload Event<br/>Data</div>
+        <div class="usecase" style="left: 670px; top: 165px;">Update Event<br/>Information</div>
+        <div class="usecase" style="left: 670px; top: 245px;">Manage Event<br/>List</div>
+        <div class="usecase" style="left: 670px; top: 325px;">View Registration<br/>Statistics</div>
+        
+    </div>
+</body>
+</html>

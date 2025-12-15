@@ -13,17 +13,18 @@ function getSheetUrl(sheetId, sheetName) {
 }
 
 function createOutlookLink(title, dateStr, timeStr, location, desc) {
-  // Simple helper to create an Outlook calendar link
-  // Note: Parsing arbitrary date strings can be tricky. 
-  // This is a basic implementation assuming a standard format or just passing strings.
-  // For a robust solution, you'd need a date parsing library.
+  // Helper to create an Outlook calendar link
+  // Using the correct Outlook.com calendar deeplink format
   
   const subject = encodeURIComponent(title);
-  const body = encodeURIComponent(`Register here: ${desc}`);
+  const body = encodeURIComponent(`Event Details:\n\nLocation: ${location}\nRegister here: ${desc}`);
   const loc = encodeURIComponent(location);
   
-  return `https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent&subject=${subject}&body=${body}&location=${loc}`;
+  // Correct format for Outlook.com calendar
+  // This opens the compose new event window directly
+  return `https://outlook.live.com/calendar/0/action/compose?subject=${subject}&body=${body}&location=${loc}`;
 }
+
 
 // === FETCH & DISPLAY EVENTS (SAT Points) ===
 async function loadEvents() {
@@ -259,7 +260,7 @@ function displayCommunityService(items, list) {
         ${contact ? `<p><strong>Contact:</strong> ${contact}</p>` : ''}
         <div class="flex flex-wrap gap-2 mt-2">
            <a href="${link}" target="_blank" class="btn">Register / Detail</a>
-           <a href="${createOutlookLink(title, date, time, location, link)}" target="_blank" class="btn" style="background-color:#28a745;">Add to Outlook</a>
+           ${contact ? `<a href="mailto:${contact}" class="btn" style="background-color:#28a745;">Contact</a>` : ''}
         </div>
       </div>
     `;

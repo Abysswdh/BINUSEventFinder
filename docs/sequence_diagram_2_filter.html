@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sequence Diagram - Filter Events</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+        svg text { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <svg viewBox="0 0 750 450">
+            <!-- Title -->
+            <text x="20" y="25" font-size="14" font-weight="bold">sd [Filter Events]</text>
+            
+            <!-- Border frame -->
+            <rect x="10" y="10" width="730" height="430" fill="none" stroke="#333" stroke-width="1"/>
+            <polygon points="140,10 140,30 120,30" fill="none" stroke="#333" stroke-width="1"/>
+            
+            <!-- Actor: Mahasiswa -->
+            <circle cx="70" cy="70" r="12" fill="none" stroke="#333" stroke-width="2"/>
+            <line x1="70" y1="82" x2="70" y2="110" stroke="#333" stroke-width="2"/>
+            <line x1="50" y1="95" x2="90" y2="95" stroke="#333" stroke-width="2"/>
+            <line x1="70" y1="110" x2="55" y2="130" stroke="#333" stroke-width="2"/>
+            <line x1="70" y1="110" x2="85" y2="130" stroke="#333" stroke-width="2"/>
+            <text x="70" y="145" text-anchor="middle" font-size="12">Mahasiswa</text>
+            
+            <!-- Object: Filter UI -->
+            <rect x="180" y="55" width="100" height="35" fill="#5DADE2" stroke="#333" stroke-width="1"/>
+            <text x="230" y="78" text-anchor="middle" font-size="12" fill="white" font-weight="bold">Filter UI</text>
+            
+            <!-- Object: JavaScript -->
+            <rect x="360" y="55" width="100" height="35" fill="#5DADE2" stroke="#333" stroke-width="1"/>
+            <text x="410" y="78" text-anchor="middle" font-size="12" fill="white" font-weight="bold">JavaScript</text>
+            
+            <!-- Object: EventData -->
+            <rect x="540" y="55" width="100" height="35" fill="#5DADE2" stroke="#333" stroke-width="1"/>
+            <text x="590" y="78" text-anchor="middle" font-size="12" fill="white" font-weight="bold">EventData</text>
+            
+            <!-- Object: DOM -->
+            <rect x="660" y="55" width="60" height="35" fill="#5DADE2" stroke="#333" stroke-width="1"/>
+            <text x="690" y="78" text-anchor="middle" font-size="12" fill="white" font-weight="bold">DOM</text>
+            
+            <!-- Lifelines -->
+            <line x1="70" y1="155" x2="70" y2="420" stroke="#333" stroke-width="1" stroke-dasharray="5,5"/>
+            <line x1="230" y1="90" x2="230" y2="420" stroke="#333" stroke-width="1" stroke-dasharray="5,5"/>
+            <line x1="410" y1="90" x2="410" y2="420" stroke="#333" stroke-width="1" stroke-dasharray="5,5"/>
+            <line x1="590" y1="90" x2="590" y2="420" stroke="#333" stroke-width="1" stroke-dasharray="5,5"/>
+            <line x1="690" y1="90" x2="690" y2="420" stroke="#333" stroke-width="1" stroke-dasharray="5,5"/>
+            
+            <!-- Activation boxes -->
+            <rect x="225" y="170" width="10" height="60" fill="#5DADE2" stroke="#333"/>
+            <rect x="405" y="210" width="10" height="180" fill="#5DADE2" stroke="#333"/>
+            <rect x="585" y="250" width="10" height="60" fill="#5DADE2" stroke="#333"/>
+            <rect x="685" y="350" width="10" height="40" fill="#5DADE2" stroke="#333"/>
+            
+            <!-- Message 1: Select filter -->
+            <line x1="70" y1="180" x2="220" y2="180" stroke="#333" stroke-width="1"/>
+            <polygon points="220,180 210,175 210,185" fill="#333"/>
+            <text x="110" y="170" font-size="11">1: selectFilter(topic/location/date)</text>
+            
+            <!-- Message 2: onChange event -->
+            <line x1="235" y1="220" x2="400" y2="220" stroke="#333" stroke-width="1"/>
+            <polygon points="400,220 390,215 390,225" fill="#333"/>
+            <text x="280" y="210" font-size="11">2: onChange()</text>
+            
+            <!-- Message 3: Apply filter -->
+            <line x1="415" y1="260" x2="580" y2="260" stroke="#333" stroke-width="1"/>
+            <polygon points="580,260 570,255 570,265" fill="#333"/>
+            <text x="460" y="250" font-size="11">3: applyFilter(criteria)</text>
+            
+            <!-- Message 4: Return filtered -->
+            <line x1="585" y1="300" x2="420" y2="300" stroke="#333" stroke-width="1" stroke-dasharray="5,3"/>
+            <polygon points="420,300 430,295 430,305" fill="#333"/>
+            <text x="470" y="290" font-size="11">4: filteredEvents[]</text>
+            
+            <!-- Message 5: Render -->
+            <line x1="415" y1="360" x2="680" y2="360" stroke="#333" stroke-width="1"/>
+            <polygon points="680,360 670,355 670,365" fill="#333"/>
+            <text x="510" y="350" font-size="11">5: updateDisplay(filteredEvents)</text>
+            
+            <!-- Message 6: Return to user -->
+            <line x1="690" y1="390" x2="240" y2="390" stroke="#333" stroke-width="1" stroke-dasharray="5,3"/>
+            <polygon points="240,390 250,385 250,395" fill="#333"/>
+            <text x="430" y="410" font-size="11">6: Updated event list</text>
+        </svg>
+    </div>
+</body>
+</html>

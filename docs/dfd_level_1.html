@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFD Level 1 - BINUS Event Finder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 30px;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: right;
+        }
+        
+        svg text {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <svg viewBox="0 0 1000 650">
+            <!-- Definitions for arrow markers -->
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+                </marker>
+            </defs>
+            
+            <!-- External Entity: Mahasiswa (Left) -->
+            <ellipse cx="80" cy="300" rx="60" ry="40" fill="#F5A623"/>
+            <text x="80" y="305" text-anchor="middle" font-weight="bold" font-size="12">Mahasiswa</text>
+            
+            <!-- External Entity: Google Sheets (Right) -->
+            <rect x="880" y="280" width="100" height="40" rx="4" fill="#F5A623"/>
+            <text x="930" y="305" text-anchor="middle" font-weight="bold" font-size="11">Google Sheets</text>
+            
+            <!-- Data Store: Event Data (Center-Right) -->
+            <rect x="680" y="280" width="120" height="40" fill="#B8E0E8" stroke="#333" stroke-width="1"/>
+            <line x1="680" y1="295" x2="800" y2="295" stroke="#333" stroke-width="1"/>
+            <text x="695" y="290" font-size="10" font-weight="bold">D1</text>
+            <text x="740" y="310" text-anchor="middle" font-size="10">Event Data</text>
+            
+            <!-- Process 1.0: Manajemen Halaman -->
+            <rect x="200" y="60" width="150" height="50" rx="20" fill="#F8C8DC" stroke="#E91E63" stroke-width="2"/>
+            <text x="210" y="75" font-size="10" font-weight="bold">1</text>
+            <text x="275" y="90" text-anchor="middle" font-size="11">Manajemen</text>
+            <text x="275" y="103" text-anchor="middle" font-size="11">Halaman</text>
+            
+            <!-- Process 2.0: Manajemen Bahasa -->
+            <rect x="200" y="150" width="150" height="50" rx="20" fill="#F8C8DC" stroke="#E91E63" stroke-width="2"/>
+            <text x="210" y="165" font-size="10" font-weight="bold">2</text>
+            <text x="275" y="180" text-anchor="middle" font-size="11">Manajemen</text>
+            <text x="275" y="193" text-anchor="middle" font-size="11">Bahasa</text>
+            
+            <!-- Process 3.0: Pengambilan Data -->
+            <rect x="450" y="270" width="150" height="60" rx="20" fill="#F8C8DC" stroke="#E91E63" stroke-width="2"/>
+            <text x="460" y="285" font-size="10" font-weight="bold">3</text>
+            <text x="525" y="300" text-anchor="middle" font-size="11">Pengambilan</text>
+            <text x="525" y="315" text-anchor="middle" font-size="11">Data Event</text>
+            
+            <!-- Process 4.0: Filter & Pencarian -->
+            <rect x="200" y="380" width="150" height="50" rx="20" fill="#F8C8DC" stroke="#E91E63" stroke-width="2"/>
+            <text x="210" y="395" font-size="10" font-weight="bold">4</text>
+            <text x="275" y="408" text-anchor="middle" font-size="11">Filter &</text>
+            <text x="275" y="421" text-anchor="middle" font-size="11">Pencarian</text>
+            
+            <!-- Process 5.0: Rendering -->
+            <rect x="200" y="480" width="150" height="50" rx="20" fill="#F8C8DC" stroke="#E91E63" stroke-width="2"/>
+            <text x="210" y="495" font-size="10" font-weight="bold">5</text>
+            <text x="275" y="510" text-anchor="middle" font-size="11">Rendering</text>
+            <text x="275" y="523" text-anchor="middle" font-size="11">Event Cards</text>
+            
+            <!-- Data Flows -->
+            
+            <!-- Mahasiswa to Process 1 (Request halaman) -->
+            <path d="M 130 270 Q 165 85 195 85" stroke="#333" stroke-width="1.5" fill="none" marker-end="url(#arrowhead)"/>
+            <text x="130" y="150" font-size="9" transform="rotate(-60 130,150)">Request halaman</text>
+            
+            <!-- Mahasiswa to Process 2 (Pilih bahasa) -->
+            <line x1="140" y1="290" x2="195" y2="175" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <text x="145" y="225" font-size="9" transform="rotate(-35 145,225)">Pilih bahasa</text>
+            
+            <!-- Mahasiswa to Process 4 (Filter criteria) -->
+            <path d="M 130 330 Q 165 405 195 405" stroke="#333" stroke-width="1.5" fill="none" marker-end="url(#arrowhead)"/>
+            <text x="130" y="380" font-size="9">Filter criteria</text>
+            
+            <!-- Process 1 to Mahasiswa (Halaman HTML) -->
+            <path d="M 200 95 Q 165 95 130 280" stroke="#333" stroke-width="1.5" fill="none" marker-end="url(#arrowhead)"/>
+            <text x="100" y="180" font-size="9">Halaman HTML</text>
+            
+            <!-- Process 2 to Mahasiswa (UI Text updated) -->
+            <line x1="200" y1="185" x2="140" y2="295" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <text x="155" y="265" font-size="9">UI Text</text>
+            
+            <!-- Process 5 to Mahasiswa (Event cards) -->
+            <path d="M 200 505 Q 140 505 130 320" stroke="#333" stroke-width="1.5" fill="none" marker-end="url(#arrowhead)"/>
+            <text x="100" y="420" font-size="9">Event cards</text>
+            
+            <!-- Process 1 to Process 3 (Load page trigger) -->
+            <path d="M 350 85 Q 450 85 475 265" stroke="#333" stroke-width="1.5" fill="none" marker-end="url(#arrowhead)"/>
+            <text x="400" y="130" font-size="9">Load trigger</text>
+            
+            <!-- Process 3 to Google Sheets (Query) -->
+            <line x1="600" y1="290" x2="675" y2="290" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <text x="620" y="283" font-size="9">Query</text>
+            
+            <!-- Data Store to Process 3 -->
+            <line x1="800" y1="295" x2="875" y2="295" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            
+            <!-- Google Sheets to Data Store (JSON) -->
+            <line x1="880" y1="310" x2="805" y2="310" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <text x="830" y="325" font-size="9">JSON</text>
+            
+            <!-- Data Store to Process 3 (Event data) -->
+            <line x1="680" y1="305" x2="605" y2="305" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <text x="620" y="318" font-size="9">Event data</text>
+            
+            <!-- Process 3 to Process 4 (Event list) -->
+            <path d="M 480 330 Q 380 360 350 395" stroke="#333" stroke-width="1.5" fill="none" marker-end="url(#arrowhead)"/>
+            <text x="400" y="370" font-size="9">Event list</text>
+            
+            <!-- Process 4 to Process 5 (Filtered events) -->
+            <line x1="275" y1="430" x2="275" y2="475" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <text x="280" y="455" font-size="9">Filtered events</text>
+            
+            <!-- Title -->
+            <text x="900" y="600" text-anchor="end" font-size="20" font-weight="bold">Data Flow Diagram (Level 1)</text>
+        </svg>
+    </div>
+</body>
+</html>
