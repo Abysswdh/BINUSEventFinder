@@ -259,8 +259,8 @@ function displayCommunityService(items, list) {
         ${benefit ? `<p><strong>Benefit:</strong> ${benefit}</p>` : ''}
         ${contact ? `<p><strong>Contact:</strong> ${contact}</p>` : ''}
         <div class="flex flex-wrap gap-2 mt-2">
-           <a href="${link}" target="_blank" class="btn">Register / Detail</a>
-           ${contact ? `<a href="mailto:${contact}" class="btn" style="background-color:#28a745;">Contact</a>` : ''}
+           ${contact ? `<a href="mailto:${contact}" class="btn">Register / Contact</a>` : `<a href="${link}" target="_blank" class="btn">Register / Detail</a>`}
+           <a href="${createOutlookLink(title, date, time, location, link)}" target="_blank" class="btn" style="background-color:#28a745;">Add to Outlook</a>
         </div>
       </div>
     `;
